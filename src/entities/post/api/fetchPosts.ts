@@ -13,5 +13,6 @@ export const fetchPosts = async ({ limit, skip }: FetchPostsOptions): Promise<Po
   }
 
   const data: PostsResponse = await response.json()
+
   return data
 }
