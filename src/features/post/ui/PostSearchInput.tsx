@@ -15,7 +15,7 @@ export const PostSearchInput = ({ value, onChange, onSubmit }: PostSearchInputPr
       className="pl-8"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      onKeyPress={(e) => e.key === "Enter" && onSubmit()}
+      onKeyDown={(e) => e.key === "Enter" && onSubmit()}
     />
   </div>
 )
