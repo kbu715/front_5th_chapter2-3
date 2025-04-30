@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
 import { Pagination, Button, Card, Dialog, HighlightedText } from "../shared/ui"
 import { UserModal } from "../features/user/ui"
 import {
@@ -27,28 +26,22 @@ import {
 } from "../entities/post/api"
 import { fetchUserById, fetchUsers } from "../entities/user/api"
 import { deleteComment, updateCommentLikes, updateComment, addComment, fetchComments } from "../entities/comment/api"
+import { usePostQueryParams } from "../features/post/model/hooks"
 
 type PostWithAuthor = Post & { author?: User }
 
 const PostsManager = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
+  const { params, setters } = usePostQueryParams()
+  const { skip, limit, search: searchQuery, sortBy, sortOrder, tag: selectedTag } = params
+  const { setSkip, setLimit, setSearch: setSearchQuery, setSortBy, setSortOrder, setTag: setSelectedTag } = setters
 
   // 상태 관리
   const [posts, setPosts] = useState<PostWithAuthor[]>([])
   const [total, setTotal] = useState<number>(0)
-  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
-  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
-  const [searchQuery, setSearchQuery] = useState<string>(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
-  const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<Tag[]>([])
-  const [selectedTag, setSelectedTag] = useState<Tag["slug"]>(queryParams.get("tag") || "")
   const [comments, setComments] = useState<{ [key: Post["id"]]: Comment[] }>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState<Pick<Comment, "body" | "postId" | "userId">>({
@@ -64,18 +57,6 @@ const PostsManager = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
-
-  // URL 업데이트 함수
-  const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
-    if (searchQuery) params.set("search", searchQuery)
-    if (sortBy) params.set("sortBy", sortBy)
-    if (sortOrder) params.set("sortOrder", sortOrder)
-    if (selectedTag) params.set("tag", selectedTag)
-    navigate(`?${params.toString()}`)
-  }
 
   // 게시물 가져오기
   const handleFetchPosts = async () => {
@@ -290,21 +271,12 @@ const PostsManager = () => {
   useEffect(() => {
     if (selectedTag) {
       handleFetchPostsByTag(selectedTag)
+    } else if (searchQuery) {
+      handleSearchPosts()
     } else {
       handleFetchPosts()
     }
-    updateURL()
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-  }, [location.search])
+  }, [skip, limit, sortBy, sortOrder, selectedTag, searchQuery])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -322,17 +294,9 @@ const PostsManager = () => {
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
             <PostSearchInput value={searchQuery} onChange={setSearchQuery} onSubmit={handleSearchPosts} />
-            <PostTagFilter
-              selectedTag={selectedTag}
-              onSelectTag={(tag) => {
-                setSelectedTag(tag)
-                handleFetchPostsByTag(tag)
-                updateURL()
-              }}
-              tags={tags}
-            />
+            <PostTagFilter selectedTag={selectedTag} onSelectTag={setSelectedTag} tags={tags} />
             <PostSortBySelect value={sortBy} onChange={setSortBy} />
-            <PostSortSelect value={sortOrder} onChange={setSortOrder} />
+            <PostSortSelect value={sortOrder} onChange={(value) => setSortOrder(value as "asc" | "desc")} />
           </div>
 
           {loading ? (
@@ -342,10 +306,7 @@ const PostsManager = () => {
               posts={posts}
               searchQuery={searchQuery}
               selectedTag={selectedTag}
-              onSelectTag={(tag) => {
-                setSelectedTag(tag)
-                updateURL()
-              }}
+              onSelectTag={setSelectedTag}
               onDeletePost={handleDeletePost}
               onEditPost={(post) => {
                 setSelectedPost(post)
@@ -356,13 +317,7 @@ const PostsManager = () => {
             />
           )}
 
-          <Pagination
-            skip={skip}
-            limit={limit}
-            total={total}
-            onLimitChange={(newLimit) => setLimit(newLimit)}
-            onPageChange={(newSkip) => setSkip(newSkip)}
-          />
+          <Pagination skip={skip} limit={limit} total={total} onLimitChange={setLimit} onPageChange={setSkip} />
         </div>
       </Card.Content>
 
