@@ -1,13 +1,11 @@
 import { PostsResponse } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 export const fetchPostsByTag = async (tag: string): Promise<PostsResponse> => {
-  const response = await fetch(`/api/posts/tag/${encodeURIComponent(tag)}`)
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.get(`/posts/tag/${encodeURIComponent(tag)}`)
+    return response.data
+  } catch (error) {
     throw new Error("태그별 게시물 불러오기 실패")
   }
-
-  const data: PostsResponse = await response.json()
-
-  return data
 }

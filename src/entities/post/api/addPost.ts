@@ -1,4 +1,5 @@
 import { Post } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 interface AddPostRequest {
   title: string
@@ -7,17 +8,10 @@ interface AddPostRequest {
 }
 
 export const addPost = async (newPost: AddPostRequest): Promise<Post> => {
-  const response = await fetch("/api/posts/add", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newPost),
-  })
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.post("/posts/add", newPost)
+    return response.data
+  } catch (error) {
     throw new Error("게시물 추가 실패")
   }
-
-  const data: Post = await response.json()
-
-  return data
 }

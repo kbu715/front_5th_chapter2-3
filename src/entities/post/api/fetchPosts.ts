@@ -1,4 +1,5 @@
 import { PostsResponse } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 interface FetchPostsOptions {
   limit: number
@@ -6,13 +7,12 @@ interface FetchPostsOptions {
 }
 
 export const fetchPosts = async ({ limit, skip }: FetchPostsOptions): Promise<PostsResponse> => {
-  const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.get(`/posts`, {
+      params: { limit, skip },
+    })
+    return response.data
+  } catch (error) {
     throw new Error("게시물 불러오기 실패")
   }
-
-  const data: PostsResponse = await response.json()
-
-  return data
 }

@@ -1,13 +1,11 @@
 import { Tag } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 export const fetchPostTags = async (): Promise<Tag[]> => {
-  const response = await fetch("/api/posts/tags")
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.get("/posts/tags")
+    return response.data
+  } catch (error) {
     throw new Error("게시물 태그 불러오기 실패")
   }
-
-  const data: Tag[] = await response.json()
-
-  return data
 }

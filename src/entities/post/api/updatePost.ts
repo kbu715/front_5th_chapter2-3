@@ -1,17 +1,11 @@
 import { Post } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 export const updatePost = async (updatedPost: Post): Promise<Post> => {
-  const response = await fetch(`/api/posts/${updatedPost.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedPost),
-  })
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.put(`/posts/${updatedPost.id}`, updatedPost)
+    return response.data
+  } catch (error) {
     throw new Error("게시물 업데이트 실패")
   }
-
-  const data: Post = await response.json()
-
-  return data
 }

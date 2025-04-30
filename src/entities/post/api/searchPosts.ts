@@ -1,13 +1,11 @@
 import { PostsResponse } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 export const searchPosts = async (query: string): Promise<PostsResponse> => {
-  const response = await fetch(`/api/posts/search?q=${encodeURIComponent(query)}`)
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.get(`/posts/search?q=${encodeURIComponent(query)}`)
+    return response.data
+  } catch (error) {
     throw new Error("게시물 검색 실패")
   }
-
-  const data: PostsResponse = await response.json()
-
-  return data
 }

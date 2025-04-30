@@ -1,4 +1,5 @@
 import { Comment } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 interface UpdateCommentLikesRequest {
   id: number
@@ -6,17 +7,10 @@ interface UpdateCommentLikesRequest {
 }
 
 export const updateCommentLikes = async ({ id, likes }: UpdateCommentLikesRequest): Promise<Comment> => {
-  const response = await fetch(`/api/comments/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ likes }),
-  })
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.patch(`/comments/${id}`, { likes })
+    return response.data
+  } catch (error) {
     throw new Error("댓글 좋아요 실패")
   }
-
-  const data: Comment = await response.json()
-
-  return data
 }

@@ -1,13 +1,11 @@
 import { UsersResponse } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 export const fetchUsers = async (): Promise<UsersResponse> => {
-  const response = await fetch("/api/users?limit=0&select=username,image")
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.get("/users?limit=0&select=username,image")
+    return response.data
+  } catch (error) {
     throw new Error("사용자 정보 불러오기 실패")
   }
-
-  const data: UsersResponse = await response.json()
-
-  return data
 }

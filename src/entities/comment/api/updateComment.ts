@@ -1,4 +1,5 @@
 import { Comment } from "../model/types"
+import { axiosInstance } from "../../../shared/lib/axios"
 
 interface UpdateCommentRequest {
   id: number
@@ -6,17 +7,10 @@ interface UpdateCommentRequest {
 }
 
 export const updateComment = async ({ id, body }: UpdateCommentRequest): Promise<Comment> => {
-  const response = await fetch(`/api/comments/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ body }),
-  })
-
-  if (!response.ok) {
+  try {
+    const response = await axiosInstance.put(`/comments/${id}`, { body })
+    return response.data
+  } catch (error) {
     throw new Error("댓글 업데이트 실패")
   }
-
-  const data: Comment = await response.json()
-
-  return data
 }

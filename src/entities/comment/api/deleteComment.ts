@@ -1,9 +1,9 @@
-export const deleteComment = async (id: number): Promise<void> => {
-  const response = await fetch(`/api/comments/${id}`, {
-    method: "DELETE",
-  })
+import { axiosInstance } from "../../../shared/lib/axios"
 
-  if (!response.ok) {
+export const deleteComment = async (id: number): Promise<void> => {
+  try {
+    await axiosInstance.delete(`/comments/${id}`)
+  } catch (error) {
     throw new Error("댓글 삭제 실패")
   }
 }
