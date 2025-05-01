@@ -1,16 +1,8 @@
 import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
-import { Pagination, Button, Card, Dialog, HighlightedText } from "../shared/ui"
+import { Button, Card, Dialog, HighlightedText } from "../shared/ui"
 import { UserModal } from "../features/user/ui"
-import {
-  AddPostDialog,
-  EditPostDialog,
-  PostSearchInput,
-  PostSortBySelect,
-  PostSortSelect,
-  PostTable,
-  PostTagFilter,
-} from "../features/post/ui"
+import { AddPostDialog, EditPostDialog } from "../features/post/ui"
 import { AddCommentDialog, CommentList, EditCommentDialog } from "../features/comment/ui"
 import { Post, Tag } from "../entities/post/model/types"
 import { User } from "../entities/user/model/types"
@@ -27,13 +19,13 @@ import {
 import { fetchUserById, fetchUsers } from "../entities/user/api"
 import { deleteComment, updateCommentLikes, updateComment, addComment, fetchComments } from "../entities/comment/api"
 import { usePostQueryParams } from "../features/post/model/hooks"
+import PostContainer from "../features/post/ui/PostContainer"
 
 type PostWithAuthor = Post & { author?: User }
 
 const PostsManager = () => {
-  const { params, setters } = usePostQueryParams()
+  const { params } = usePostQueryParams()
   const { skip, limit, search: searchQuery, sortBy, sortOrder, tag: selectedTag } = params
-  const { setSkip, setLimit, setSearch: setSearchQuery, setSortBy, setSortOrder, setTag: setSelectedTag } = setters
 
   // 서버 상태 관리
   const [posts, setPosts] = useState<PostWithAuthor[]>([])
@@ -243,6 +235,11 @@ const PostsManager = () => {
     setShowPostDetailDialog(true)
   }
 
+  const openPostEditDialog = (post: Post) => {
+    setSelectedPost(post)
+    setShowEditDialog(true)
+  }
+
   // 사용자 모달 열기
   const openUserModal = async (user: User | undefined) => {
     if (!user) return
@@ -287,35 +284,17 @@ const PostsManager = () => {
         </Card.Title>
       </Card.Header>
       <Card.Content>
-        <div className="flex flex-col gap-4">
-          {/* 검색 및 필터 컨트롤 */}
-          <div className="flex gap-4">
-            <PostSearchInput value={searchQuery} onChange={setSearchQuery} onSubmit={handleSearchPosts} />
-            <PostTagFilter selectedTag={selectedTag} onSelectTag={setSelectedTag} tags={tags} />
-            <PostSortBySelect value={sortBy} onChange={setSortBy} />
-            <PostSortSelect value={sortOrder} onChange={(value) => setSortOrder(value as "asc" | "desc")} />
-          </div>
-
-          {loading ? (
-            <div className="flex justify-center p-4">로딩 중...</div>
-          ) : (
-            <PostTable
-              posts={posts}
-              searchQuery={searchQuery}
-              selectedTag={selectedTag}
-              onSelectTag={setSelectedTag}
-              onDeletePost={handleDeletePost}
-              onEditPost={(post) => {
-                setSelectedPost(post)
-                setShowEditDialog(true)
-              }}
-              onOpenPostDetail={openPostDetail}
-              onOpenUserModal={openUserModal}
-            />
-          )}
-
-          <Pagination skip={skip} limit={limit} total={total} onLimitChange={setLimit} onPageChange={setSkip} />
-        </div>
+        <PostContainer
+          tags={tags}
+          handleSearchPosts={handleSearchPosts}
+          total={total}
+          loading={loading}
+          posts={posts}
+          handleDeletePost={handleDeletePost}
+          openPostEditDialog={openPostEditDialog}
+          openPostDetail={openPostDetail}
+          openUserModal={openUserModal}
+        />
       </Card.Content>
 
       <AddPostDialog showAddDialog={showAddDialog} setShowAddDialog={setShowAddDialog} onAddPost={handleAddPost} />
