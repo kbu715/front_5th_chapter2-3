@@ -32,9 +32,9 @@ export const CommentList = ({
         </Button>
       </div>
       <div className="space-y-1">
-        {comments.map((comment) => (
+        {comments.map((comment, index) => (
           <CommentItem
-            key={comment.id}
+            key={`${comment.id}-${index}`}
             comment={comment}
             postId={postId}
             searchQuery={searchQuery}

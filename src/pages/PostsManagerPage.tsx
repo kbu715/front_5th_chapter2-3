@@ -35,20 +35,18 @@ const PostsManager = () => {
   const { skip, limit, search: searchQuery, sortBy, sortOrder, tag: selectedTag } = params
   const { setSkip, setLimit, setSearch: setSearchQuery, setSortBy, setSortOrder, setTag: setSelectedTag } = setters
 
-  // 상태 관리
+  // 서버 상태 관리
   const [posts, setPosts] = useState<PostWithAuthor[]>([])
   const [total, setTotal] = useState<number>(0)
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<Tag[]>([])
   const [comments, setComments] = useState<{ [key: Post["id"]]: Comment[] }>({})
+
+  // 클라이언트 상태 관리
+  const [commentPostId, setCommentPostId] = useState<number | null>(null)
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<Pick<Comment, "body" | "postId" | "userId">>({
-    body: "",
-    postId: null,
-    userId: 1,
-  })
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
@@ -56,7 +54,6 @@ const PostsManager = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 게시물 가져오기
   const handleFetchPosts = async () => {
@@ -133,25 +130,20 @@ const PostsManager = () => {
     setLoading(false)
   }
 
-  // 게시물 추가
-  const handleAddPost = async () => {
+  const handleAddPost = async (formData: Pick<Post, "title" | "body" | "userId">) => {
     try {
-      const data = await addPost(newPost)
-
+      const data = await addPost(formData)
       setPosts([data, ...posts])
       setShowAddDialog(false)
-      setNewPost({ title: "", body: "", userId: 1 })
     } catch (error) {
       console.error("게시물 추가 오류:", error)
     }
   }
 
   // 게시물 업데이트
-  const handleUpdatePost = async () => {
+  const handleUpdatePost = async (updatedPost: Post) => {
     try {
-      if (!selectedPost) return
-
-      const data = await updatePost(selectedPost)
+      const data = await updatePost(updatedPost)
       setPosts(posts.map((post) => (post.id === data.id ? data : post)))
       setShowEditDialog(false)
     } catch (error) {
@@ -181,27 +173,27 @@ const PostsManager = () => {
   }
 
   // 댓글 추가
-  const handleAddComment = async () => {
+  const handleAddComment = async (formData: Pick<Comment, "body" | "postId" | "userId">) => {
     try {
-      const data = await addComment(newComment)
+      const data = await addComment(formData)
 
       setComments((prev) => ({
         ...prev,
         ...(data.postId ? { [data.postId]: [...(prev[data.postId] || []), data] } : {}),
       }))
       setShowAddCommentDialog(false)
-      setNewComment({ body: "", postId: null, userId: 1 })
     } catch (error) {
       console.error("댓글 추가 오류:", error)
     }
   }
 
   // 댓글 업데이트
-  const handleUpdateComment = async () => {
+  const handleUpdateComment = async (updatedComment: Comment) => {
     try {
-      if (!selectedComment) return
-
-      const data = await updateComment({ id: selectedComment.id, body: selectedComment.body })
+      const data = await updateComment({
+        id: updatedComment.id,
+        body: updatedComment.body,
+      })
 
       setComments((prev) => ({
         ...prev,
@@ -264,6 +256,11 @@ const PostsManager = () => {
     }
   }
 
+  const openAddCommentDialog = (postId: number) => {
+    setCommentPostId(postId)
+    setShowAddCommentDialog(true)
+  }
+
   useEffect(() => {
     handleFetchTags()
   }, [])
@@ -321,36 +318,27 @@ const PostsManager = () => {
         </div>
       </Card.Content>
 
-      <AddPostDialog
-        showAddDialog={showAddDialog}
-        setShowAddDialog={setShowAddDialog}
-        newPost={newPost}
-        setNewPost={setNewPost}
-        onAddPost={handleAddPost}
-      />
+      <AddPostDialog showAddDialog={showAddDialog} setShowAddDialog={setShowAddDialog} onAddPost={handleAddPost} />
 
       <EditPostDialog
         showEditDialog={showEditDialog}
         setShowEditDialog={setShowEditDialog}
         selectedPost={selectedPost}
-        setSelectedPost={setSelectedPost}
         onUpdatePost={handleUpdatePost}
       />
 
       <AddCommentDialog
         showAddCommentDialog={showAddCommentDialog}
         setShowAddCommentDialog={setShowAddCommentDialog}
-        newComment={newComment}
-        setNewComment={setNewComment}
         onAddComment={handleAddComment}
+        postId={commentPostId}
       />
 
       <EditCommentDialog
         showEditCommentDialog={showEditCommentDialog}
         setShowEditCommentDialog={setShowEditCommentDialog}
         selectedComment={selectedComment}
-        setSelectedComment={setSelectedComment}
-        handleUpdateComment={handleUpdateComment}
+        onUpdateComment={handleUpdateComment}
       />
 
       {/* 게시물 상세 보기 대화상자 */}
@@ -370,10 +358,7 @@ const PostsManager = () => {
                 comments={comments[selectedPost.id] || []}
                 postId={selectedPost.id}
                 searchQuery={searchQuery}
-                onAddComment={(postId) => {
-                  setNewComment((prev) => ({ ...prev, postId }))
-                  setShowAddCommentDialog(true)
-                }}
+                onAddComment={openAddCommentDialog}
                 onLikeComment={handleLikeComment}
                 onEditComment={(comment) => {
                   setSelectedComment(comment)
