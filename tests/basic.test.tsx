@@ -8,7 +8,7 @@ import PostsManager from "../src/pages/PostsManagerPage"
 import * as React from "react"
 import "@testing-library/jest-dom"
 import { TEST_POSTS, TEST_SEARCH_POST, TEST_USERS } from "./mockData"
-
+import { TestQueryClientProvider } from "../src/shared/lib/test"
 // MSW 서버 설정
 const server = setupServer(
   http.get("/api/posts", () => {
@@ -46,9 +46,11 @@ afterAll(() => server.close())
 // 테스트에 공통으로 사용될 render 함수
 const renderPostsManager = () => {
   return render(
-    <MemoryRouter>
-      <PostsManager />
-    </MemoryRouter>,
+    <TestQueryClientProvider>
+      <MemoryRouter>
+        <PostsManager />
+      </MemoryRouter>
+    </TestQueryClientProvider>,
   )
 }
 
