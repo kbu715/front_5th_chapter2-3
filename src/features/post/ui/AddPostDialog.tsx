@@ -1,20 +1,22 @@
 import { Button, Dialog, Input, Textarea } from "../../../shared/ui"
-import { Post } from "../../../entities/post/model/types"
+import { Post, PostsResponse } from "../../../entities/post/model/types"
 import { useForm } from "react-hook-form"
+import { useAddPostMutation } from "../../../entities/post/model/hooks/mutations"
+import { postQueryKeys } from "../../../entities/post/model/queryKeys"
+import { useQueryClient } from "@tanstack/react-query"
+import { usePostQueryParams } from "../model/hooks"
 
 type PostFormValues = Pick<Post, "title" | "body" | "userId">
 
 interface AddPostDialogProps {
   showAddDialog: boolean
   setShowAddDialog: (showAddDialog: boolean) => void
-  onAddPost: (data: PostFormValues) => void
   defaultValues?: PostFormValues
 }
 
 export const AddPostDialog = ({
   showAddDialog,
   setShowAddDialog,
-  onAddPost,
   defaultValues = { title: "", body: "", userId: 1 },
 }: AddPostDialogProps) => {
   const {
@@ -26,8 +28,27 @@ export const AddPostDialog = ({
     defaultValues,
   })
 
+  const queryClient = useQueryClient()
+  const { params } = usePostQueryParams()
+  const { limit, skip } = params
+  const { mutate: addPost, isPending } = useAddPostMutation({
+    onSuccess: (newPost) => {
+      queryClient.setQueryData(postQueryKeys.list({ limit, skip }), (old: PostsResponse) => {
+        if (!old) {
+          return { posts: [newPost], total: 1 }
+        }
+        return {
+          ...old,
+          posts: [newPost, ...old.posts],
+          total: old.total + 1,
+        }
+      })
+      setShowAddDialog(false)
+    },
+  })
+
   const onSubmit = (data: PostFormValues) => {
-    onAddPost(data)
+    addPost(data)
     reset()
   }
 
@@ -56,7 +77,7 @@ export const AddPostDialog = ({
             })}
           />
 
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || isPending}>
             게시물 추가
           </Button>
         </form>

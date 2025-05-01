@@ -1,7 +1,11 @@
 import { MessageSquare, Edit2, Trash2, ThumbsUp, ThumbsDown } from "lucide-react"
 import { Button, Table, HighlightedText } from "../../../shared/ui"
-import { Post } from "../../../entities/post/model/types"
+import { Post, PostsResponse } from "../../../entities/post/model/types"
 import { User } from "../../../entities/user/model/types"
+import { useDeletePostMutation } from "../../../entities/post/model/hooks/mutations"
+import { useQueryClient } from "@tanstack/react-query"
+import { usePostQueryParams } from "../model/hooks"
+import { postQueryKeys } from "../../../entities/post/model/queryKeys"
 
 type PostWithAuthor = Post & { author?: User }
 
@@ -10,7 +14,6 @@ interface PostTableProps {
   searchQuery: string
   selectedTag: string
   onSelectTag: (tag: string) => void
-  onDeletePost: (postId: number) => void
   onEditPost: (post: PostWithAuthor) => void
   onOpenPostDetail: (post: PostWithAuthor) => void
   onOpenUserModal: (user: User | undefined) => void
@@ -21,11 +24,26 @@ export const PostTable = ({
   searchQuery,
   selectedTag,
   onSelectTag,
-  onDeletePost,
   onEditPost,
   onOpenPostDetail,
   onOpenUserModal,
 }: PostTableProps) => {
+  const queryClient = useQueryClient()
+  const { params } = usePostQueryParams()
+  const { limit, skip } = params
+  const { mutate: deletePost } = useDeletePostMutation({
+    onSuccess: (_, deletedId) => {
+      queryClient.setQueryData(postQueryKeys.list({ limit, skip }), (old: PostsResponse) => {
+        if (!old) return undefined
+        return {
+          ...old,
+          posts: old.posts.filter((post) => post.id !== deletedId),
+          total: old.total - 1,
+        }
+      })
+    },
+  })
+
   return (
     <Table>
       <Table.Header>
@@ -85,7 +103,7 @@ export const PostTable = ({
                 <Button variant="ghost" size="sm" onClick={() => onEditPost(post)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => onDeletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

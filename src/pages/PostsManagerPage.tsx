@@ -1,37 +1,21 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button, Card, Dialog, HighlightedText } from "../shared/ui"
 import { UserModal } from "../features/user/ui"
 import { AddPostDialog, EditPostDialog } from "../features/post/ui"
 import { AddCommentDialog, CommentList, EditCommentDialog } from "../features/comment/ui"
-import { Post, Tag } from "../entities/post/model/types"
+import { Post } from "../entities/post/model/types"
 import { User } from "../entities/user/model/types"
 import { Comment } from "../entities/comment/model/types"
-import {
-  addPost,
-  deletePost,
-  fetchPosts,
-  searchPosts,
-  updatePost,
-  fetchPostTags,
-  fetchPostsByTag,
-} from "../entities/post/api"
-import { fetchUserById, fetchUsers } from "../entities/user/api"
+import { fetchUserById } from "../entities/user/api"
 import { deleteComment, updateCommentLikes, updateComment, addComment, fetchComments } from "../entities/comment/api"
 import { usePostQueryParams } from "../features/post/model/hooks"
 import PostContainer from "../features/post/ui/PostContainer"
 
-type PostWithAuthor = Post & { author?: User }
-
 const PostsManager = () => {
   const { params } = usePostQueryParams()
-  const { skip, limit, search: searchQuery, sortBy, sortOrder, tag: selectedTag } = params
+  const { search: searchQuery } = params
 
-  // 서버 상태 관리
-  const [posts, setPosts] = useState<PostWithAuthor[]>([])
-  const [total, setTotal] = useState<number>(0)
-  const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState<Tag[]>([])
   const [comments, setComments] = useState<{ [key: Post["id"]]: Comment[] }>({})
 
   // 클라이언트 상태 관리
@@ -46,112 +30,6 @@ const PostsManager = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
-
-  // 게시물 가져오기
-  const handleFetchPosts = async () => {
-    setLoading(true)
-    try {
-      const { posts, total } = await fetchPosts({ limit, skip })
-      const { users } = await fetchUsers()
-
-      const postsWithUsers = posts.map((post) => ({
-        ...post,
-        author: users.find((user) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(total)
-    } catch (error) {
-      console.error("게시물 불러오기 오류:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // 태그 가져오기
-  const handleFetchTags = async () => {
-    try {
-      const tags = await fetchPostTags()
-
-      setTags(tags)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
-
-  // 게시물 검색
-  const handleSearchPosts = async () => {
-    if (!searchQuery) {
-      handleFetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const data = await searchPosts(searchQuery)
-      setPosts(data.posts)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
-    setLoading(false)
-  }
-
-  // 태그별 게시물 가져오기
-  const handleFetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === "all") {
-      handleFetchPosts()
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const { posts, total } = await fetchPostsByTag(tag)
-      const { users } = await fetchUsers()
-
-      const postsWithUsers = posts.map((post) => ({
-        ...post,
-        author: users.find((user) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(total)
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error)
-    }
-    setLoading(false)
-  }
-
-  const handleAddPost = async (formData: Pick<Post, "title" | "body" | "userId">) => {
-    try {
-      const data = await addPost(formData)
-      setPosts([data, ...posts])
-      setShowAddDialog(false)
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
-  }
-
-  // 게시물 업데이트
-  const handleUpdatePost = async (updatedPost: Post) => {
-    try {
-      const data = await updatePost(updatedPost)
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
-  }
-
-  // 게시물 삭제
-  const handleDeletePost = async (id: number) => {
-    try {
-      await deletePost(id)
-      setPosts(posts.filter((post) => post.id !== id))
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error)
-    }
-  }
 
   // 댓글 가져오기
   const handleFetchComments = async (postId: number) => {
@@ -258,20 +136,6 @@ const PostsManager = () => {
     setShowAddCommentDialog(true)
   }
 
-  useEffect(() => {
-    handleFetchTags()
-  }, [])
-
-  useEffect(() => {
-    if (selectedTag) {
-      handleFetchPostsByTag(selectedTag)
-    } else if (searchQuery) {
-      handleSearchPosts()
-    } else {
-      handleFetchPosts()
-    }
-  }, [skip, limit, sortBy, sortOrder, selectedTag, searchQuery])
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <Card.Header>
@@ -285,25 +149,18 @@ const PostsManager = () => {
       </Card.Header>
       <Card.Content>
         <PostContainer
-          tags={tags}
-          handleSearchPosts={handleSearchPosts}
-          total={total}
-          loading={loading}
-          posts={posts}
-          handleDeletePost={handleDeletePost}
           openPostEditDialog={openPostEditDialog}
           openPostDetail={openPostDetail}
           openUserModal={openUserModal}
         />
       </Card.Content>
 
-      <AddPostDialog showAddDialog={showAddDialog} setShowAddDialog={setShowAddDialog} onAddPost={handleAddPost} />
+      <AddPostDialog showAddDialog={showAddDialog} setShowAddDialog={setShowAddDialog} />
 
       <EditPostDialog
         showEditDialog={showEditDialog}
         setShowEditDialog={setShowEditDialog}
         selectedPost={selectedPost}
-        onUpdatePost={handleUpdatePost}
       />
 
       <AddCommentDialog

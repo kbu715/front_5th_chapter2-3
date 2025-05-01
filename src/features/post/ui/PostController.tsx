@@ -1,24 +1,20 @@
-import { Tag } from "../../../entities/post/model/types"
+import { usePostTagsQuery } from "../../../entities/post/model/hooks/queries"
 import { usePostQueryParams } from "../model/hooks"
 import { PostSearchInput } from "./PostSearchInput"
 import { PostSortBySelect } from "./PostSortBySelect"
 import { PostSortSelect } from "./PostSortSelect"
 import { PostTagFilter } from "./PostTagFilter"
 
-interface PostControllerProps {
-  tags: Tag[]
-  handleSearchPosts: () => void
-}
-
-const PostController = ({ tags, handleSearchPosts }: PostControllerProps) => {
+const PostController = () => {
   const { params, setters } = usePostQueryParams()
-  const { search, sortBy, sortOrder, tag } = params
-  const { setSearch, setSortBy, setSortOrder, setTag } = setters
+  const { sortBy, sortOrder, tag } = params
+  const { setSortBy, setSortOrder, setTag } = setters
+  const { data: tags } = usePostTagsQuery()
 
   return (
     <div className="flex gap-4">
-      <PostSearchInput value={search} onChange={setSearch} onSubmit={handleSearchPosts} />
-      <PostTagFilter selectedTag={tag} onSelectTag={setTag} tags={tags} />
+      <PostSearchInput />
+      <PostTagFilter selectedTag={tag} onSelectTag={setTag} tags={tags || []} />
       <PostSortBySelect value={sortBy} onChange={setSortBy} />
       <PostSortSelect value={sortOrder} onChange={(value) => setSortOrder(value as "asc" | "desc")} />
     </div>

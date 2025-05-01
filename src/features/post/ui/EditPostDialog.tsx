@@ -1,7 +1,11 @@
-import { Post } from "../../../entities/post/model/types"
+import { Post, PostsResponse } from "../../../entities/post/model/types"
 import { Dialog, Textarea, Input, Button } from "../../../shared/ui"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
+import { useUpdatePostMutation } from "../../../entities/post/model/hooks/mutations"
+import { useQueryClient } from "@tanstack/react-query"
+import { postQueryKeys } from "../../../entities/post/model/queryKeys"
+import { usePostQueryParams } from "../model/hooks"
 
 type PostFormValues = Pick<Post, "title" | "body">
 
@@ -9,15 +13,9 @@ interface EditPostDialogProps {
   showEditDialog: boolean
   setShowEditDialog: (showEditDialog: boolean) => void
   selectedPost: Post | null
-  onUpdatePost: (updatedPost: Post) => void
 }
 
-export const EditPostDialog = ({
-  showEditDialog,
-  setShowEditDialog,
-  selectedPost,
-  onUpdatePost,
-}: EditPostDialogProps) => {
+export const EditPostDialog = ({ showEditDialog, setShowEditDialog, selectedPost }: EditPostDialogProps) => {
   const {
     register,
     handleSubmit,
@@ -27,6 +25,25 @@ export const EditPostDialog = ({
     defaultValues: {
       title: "",
       body: "",
+    },
+  })
+
+  const queryClient = useQueryClient()
+  const { params } = usePostQueryParams()
+  const { limit, skip } = params
+
+  const { mutate: updatePost } = useUpdatePostMutation({
+    onSuccess: (data) => {
+      queryClient.setQueryData(postQueryKeys.list({ limit, skip }), (old: PostsResponse) => {
+        if (!old) return undefined
+
+        return {
+          ...old,
+          posts: old.posts.map((post) => (post.id === data.id ? data : post)),
+        }
+      })
+
+      setShowEditDialog(false)
     },
   })
 
@@ -42,7 +59,7 @@ export const EditPostDialog = ({
   const onSubmit = (data: PostFormValues) => {
     if (!selectedPost) return
 
-    onUpdatePost({
+    updatePost({
       ...selectedPost,
       ...data,
     })
