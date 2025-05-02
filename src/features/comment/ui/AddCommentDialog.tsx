@@ -1,22 +1,19 @@
 import { Button, Dialog, Textarea } from "../../../shared/ui"
 import { Comment } from "../../../entities/comment/model/types"
 import { useForm } from "react-hook-form"
+import { useAddCommentMutation } from "../../../entities/comment/model/hooks/mutations"
+import { useQueryClient } from "@tanstack/react-query"
+import { commentQueryKeys } from "../../../entities/comment/model/queryKeys"
 
 type CommentFormValues = Pick<Comment, "body" | "userId">
 
 interface AddCommentDialogProps {
-  showAddCommentDialog: boolean
-  setShowAddCommentDialog: (showAddCommentDialog: boolean) => void
-  onAddComment: (data: Pick<Comment, "body" | "postId" | "userId">) => void
-  postId: number | null
+  postId: number
+  isOpen: boolean
+  close: () => void
 }
 
-export const AddCommentDialog = ({
-  showAddCommentDialog,
-  setShowAddCommentDialog,
-  onAddComment,
-  postId,
-}: AddCommentDialogProps) => {
+export const AddCommentDialog = ({ postId, isOpen, close }: AddCommentDialogProps) => {
   const {
     register,
     handleSubmit,
@@ -29,9 +26,20 @@ export const AddCommentDialog = ({
     },
   })
 
+  const queryClient = useQueryClient()
+
+  const { mutate: addComment } = useAddCommentMutation({
+    onSuccess: (data) => {
+      queryClient.setQueryData(commentQueryKeys.byPost(postId), (old: Comment[]) => {
+        return [...old, { ...data, likes: 0 }]
+      })
+      close()
+    },
+  })
+
   const onSubmit = (data: CommentFormValues) => {
     if (!postId) return
-    onAddComment({
+    addComment({
       ...data,
       postId,
     })
@@ -40,10 +48,12 @@ export const AddCommentDialog = ({
 
   return (
     <Dialog
-      open={showAddCommentDialog}
+      open={isOpen}
       onOpenChange={(open) => {
-        setShowAddCommentDialog(open)
-        if (!open) reset()
+        if (!open) {
+          reset()
+          close()
+        }
       }}
     >
       <Dialog.Content>

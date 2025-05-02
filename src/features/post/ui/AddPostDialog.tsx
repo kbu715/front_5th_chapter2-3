@@ -9,15 +9,15 @@ import { usePostQueryParams } from "../model/hooks"
 type PostFormValues = Pick<Post, "title" | "body" | "userId">
 
 interface AddPostDialogProps {
-  showAddDialog: boolean
-  setShowAddDialog: (showAddDialog: boolean) => void
   defaultValues?: PostFormValues
+  isOpen: boolean
+  close: () => void
 }
 
 export const AddPostDialog = ({
-  showAddDialog,
-  setShowAddDialog,
   defaultValues = { title: "", body: "", userId: 1 },
+  isOpen,
+  close,
 }: AddPostDialogProps) => {
   const {
     register,
@@ -43,7 +43,7 @@ export const AddPostDialog = ({
           total: old.total + 1,
         }
       })
-      setShowAddDialog(false)
+      close()
     },
   })
 
@@ -54,10 +54,12 @@ export const AddPostDialog = ({
 
   return (
     <Dialog
-      open={showAddDialog}
+      open={isOpen}
       onOpenChange={(open) => {
-        setShowAddDialog(open)
-        if (!open) reset()
+        if (!open) {
+          reset()
+          close()
+        }
       }}
     >
       <Dialog.Content>

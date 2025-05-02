@@ -10,12 +10,12 @@ import { usePostQueryParams } from "../model/hooks"
 type PostFormValues = Pick<Post, "title" | "body">
 
 interface EditPostDialogProps {
-  showEditDialog: boolean
-  setShowEditDialog: (showEditDialog: boolean) => void
-  selectedPost: Post | null
+  post: Post | null
+  isOpen: boolean
+  close: () => void
 }
 
-export const EditPostDialog = ({ showEditDialog, setShowEditDialog, selectedPost }: EditPostDialogProps) => {
+export const EditPostDialog = ({ post, isOpen, close }: EditPostDialogProps) => {
   const {
     register,
     handleSubmit,
@@ -32,7 +32,7 @@ export const EditPostDialog = ({ showEditDialog, setShowEditDialog, selectedPost
   const { params } = usePostQueryParams()
   const { limit, skip } = params
 
-  const { mutate: updatePost } = useUpdatePostMutation({
+  const { mutate: updatePost, isPending } = useUpdatePostMutation({
     onSuccess: (data) => {
       queryClient.setQueryData(postQueryKeys.list({ limit, skip }), (old: PostsResponse) => {
         if (!old) return undefined
@@ -43,34 +43,36 @@ export const EditPostDialog = ({ showEditDialog, setShowEditDialog, selectedPost
         }
       })
 
-      setShowEditDialog(false)
+      close()
     },
   })
 
   useEffect(() => {
-    if (selectedPost) {
+    if (post) {
       reset({
-        title: selectedPost.title,
-        body: selectedPost.body,
+        title: post.title,
+        body: post.body,
       })
     }
-  }, [selectedPost])
+  }, [post])
 
   const onSubmit = (data: PostFormValues) => {
-    if (!selectedPost) return
+    if (!post) return
 
     updatePost({
-      ...selectedPost,
+      ...post,
       ...data,
     })
   }
 
   return (
     <Dialog
-      open={showEditDialog}
+      open={isOpen}
       onOpenChange={(open) => {
-        setShowEditDialog(open)
-        if (!open) reset()
+        if (!open) {
+          reset()
+          close()
+        }
       }}
     >
       <Dialog.Content>
@@ -80,7 +82,7 @@ export const EditPostDialog = ({ showEditDialog, setShowEditDialog, selectedPost
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input placeholder="제목" {...register("title", { required: true })} />
           <Textarea rows={15} placeholder="내용" {...register("body", { required: true })} />
-          <Button type="submit" disabled={isSubmitting || !selectedPost}>
+          <Button type="submit" disabled={isSubmitting || isPending}>
             게시물 업데이트
           </Button>
         </form>
