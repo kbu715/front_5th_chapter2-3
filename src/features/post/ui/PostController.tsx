@@ -5,7 +5,7 @@ import { PostSortBySelect } from "./PostSortBySelect"
 import { PostSortSelect } from "./PostSortSelect"
 import { PostTagFilter } from "./PostTagFilter"
 
-const PostController = () => {
+export const PostController = () => {
   const { params, setters } = usePostQueryParams()
   const { sortBy, sortOrder, tag } = params
   const { setSortBy, setSortOrder, setTag } = setters
@@ -20,5 +20,3 @@ const PostController = () => {
     </div>
   )
 }
-
-export default PostController
