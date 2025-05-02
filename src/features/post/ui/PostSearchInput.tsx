@@ -4,10 +4,11 @@ import { usePostQueryParams } from "../model/hooks"
 import { useState } from "react"
 
 export const PostSearchInput = () => {
-  const { setters } = usePostQueryParams()
+  const { setters, params } = usePostQueryParams()
   const { setSearch } = setters
+  const { search } = params
 
-  const [searchQuery, setSearchQuery] = useState("")
+  const [value, setValue] = useState(search)
 
   return (
     <div className="relative flex-1">
@@ -15,12 +16,12 @@ export const PostSearchInput = () => {
       <Input
         placeholder="게시물 검색..."
         className="pl-8"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault()
-            setSearch(searchQuery)
+            setSearch(value)
           }
         }}
       />
