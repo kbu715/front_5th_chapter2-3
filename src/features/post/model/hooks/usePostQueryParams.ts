@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom"
+import { useEffect } from "react"
 
 interface QueryParams {
   skip: number
@@ -11,6 +12,22 @@ interface QueryParams {
 
 export function usePostQueryParams(initialParams?: Partial<QueryParams>) {
   const [searchParams, setSearchParams] = useSearchParams()
+
+  useEffect(() => {
+    const newParams = new URLSearchParams(searchParams)
+
+    if (!searchParams.has("limit")) {
+      newParams.set("limit", "10")
+    }
+
+    if (!searchParams.has("sortOrder")) {
+      newParams.set("sortOrder", "asc")
+    }
+
+    if (newParams.toString() !== searchParams.toString()) {
+      setSearchParams(newParams, { replace: true })
+    }
+  }, [])
 
   const skip = parseInt(searchParams.get("skip") || initialParams?.skip?.toString() || "0")
   const limit = parseInt(searchParams.get("limit") || initialParams?.limit?.toString() || "10")
