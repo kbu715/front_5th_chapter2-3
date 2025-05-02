@@ -9,6 +9,7 @@ import * as React from "react"
 import "@testing-library/jest-dom"
 import { TEST_POSTS, TEST_SEARCH_POST, TEST_USERS } from "./mockData"
 import { TestQueryClientProvider } from "../src/shared/lib/test"
+import { OverlayProvider } from "../src/shared/lib/overlay"
 // MSW 서버 설정
 const server = setupServer(
   http.get("/api/posts", () => {
@@ -48,7 +49,9 @@ const renderPostsManager = () => {
   return render(
     <TestQueryClientProvider>
       <MemoryRouter>
-        <PostsManager />
+        <OverlayProvider>
+          <PostsManager />
+        </OverlayProvider>
       </MemoryRouter>
     </TestQueryClientProvider>,
   )
