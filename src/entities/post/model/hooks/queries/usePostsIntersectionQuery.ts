@@ -27,8 +27,13 @@ export const usePostsIntersectionQuery = ({
     )
   }, [allPosts?.posts, searchPosts?.posts, tagPosts?.posts, search, tag])
 
+  const total = useMemo(() => {
+    return allPosts?.total
+  }, [allPosts])
+
   return {
     posts,
     isLoading: isAllLoading || isSearchLoading || isTagLoading,
+    total,
   }
 }
