@@ -6,6 +6,10 @@ import { useDeletePostMutation } from "../../../entities/post/model/hooks/mutati
 import { useQueryClient } from "@tanstack/react-query"
 import { usePostQueryParams } from "../model/hooks"
 import { postQueryKeys } from "../../../entities/post/model/queryKeys"
+import { useOverlay } from "../../../shared/lib/overlay"
+import { UserModal } from "../../user/ui"
+import { EditPostDialog } from "./EditPostDialog"
+import { PostDetailModal } from "./PostDetailModal"
 
 type PostWithAuthor = Post & { author?: User }
 
@@ -14,20 +18,9 @@ interface PostTableProps {
   searchQuery: string
   selectedTag: string
   onSelectTag: (tag: string) => void
-  onEditPost: (post: PostWithAuthor) => void
-  onOpenPostDetail: (post: PostWithAuthor) => void
-  onOpenUserModal: (user: User | undefined) => void
 }
 
-export const PostTable = ({
-  posts,
-  searchQuery,
-  selectedTag,
-  onSelectTag,
-  onEditPost,
-  onOpenPostDetail,
-  onOpenUserModal,
-}: PostTableProps) => {
+export const PostTable = ({ posts, searchQuery, selectedTag, onSelectTag }: PostTableProps) => {
   const queryClient = useQueryClient()
   const { params } = usePostQueryParams()
   const { limit, skip } = params
@@ -43,6 +36,8 @@ export const PostTable = ({
       })
     },
   })
+
+  const { open } = useOverlay()
 
   return (
     <Table>
@@ -82,7 +77,15 @@ export const PostTable = ({
               </div>
             </Table.Cell>
             <Table.Cell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onOpenUserModal(post.author)}>
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => {
+                  if (!post.author?.id) return
+                  open(({ isOpen, close }) => {
+                    return <UserModal userId={post.author?.id!} isOpen={isOpen} close={close} />
+                  })
+                }}
+              >
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
@@ -97,10 +100,22 @@ export const PostTable = ({
             </Table.Cell>
             <Table.Cell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => onOpenPostDetail(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    open(({ isOpen, close }) => <PostDetailModal post={post} isOpen={isOpen} close={close} />)
+                  }
+                >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => onEditPost(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    open(({ isOpen, close }) => <EditPostDialog post={post} isOpen={isOpen} close={close} />)
+                  }
+                >
                   <Edit2 className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
