@@ -1,5 +1,4 @@
 export * from "./AddCommentDialog"
 export * from "./EditCommentDialog"
-export * from "./CommentList"
 export * from "./CommentItem"
-export * from "./CommentListSkeleton"
+export * from "./DeleteCommentDialog"

@@ -1,14 +1,12 @@
 import { ThumbsUp, Edit2, Trash2 } from "lucide-react"
 import { HighlightedText, Button } from "../../../shared/ui"
 import { Comment } from "../../../entities/comment/model/types"
-import {
-  useDeleteCommentMutation,
-  useUpdateCommentLikesMutation,
-} from "../../../entities/comment/model/hooks/mutations"
+import { useUpdateCommentLikesMutation } from "../../../entities/comment/model/hooks/mutations"
 import { useQueryClient } from "@tanstack/react-query"
 import { commentQueryKeys } from "../../../entities/comment/model/queryKeys"
 import { useOverlay } from "../../../shared/lib/overlay"
 import { EditCommentDialog } from "./EditCommentDialog"
+import { DeleteCommentDialog } from "./DeleteCommentDialog"
 
 interface CommentItemProps {
   comment: Comment
@@ -19,14 +17,6 @@ interface CommentItemProps {
 export const CommentItem = ({ comment, postId, searchQuery }: CommentItemProps) => {
   const queryClient = useQueryClient()
   const { open } = useOverlay()
-
-  const { mutate: deleteComment, isPending: isDeleting } = useDeleteCommentMutation({
-    onSuccess: () => {
-      queryClient.setQueryData(commentQueryKeys.byPost(postId), (old: Comment[]) =>
-        old.filter((c) => c.id !== comment.id),
-      )
-    },
-  })
 
   const { mutate: updateCommentLikes, isPending: isUpdatingLikes } = useUpdateCommentLikesMutation({
     // optimistic update 적용
@@ -48,6 +38,7 @@ export const CommentItem = ({ comment, postId, searchQuery }: CommentItemProps) 
       }
     },
 
+    // 댓글 좋아요 업데이트 후 댓글 목록 갱신 (실제 서버 데이터와 동기화 할 때는 여기까지 해줘야 함)
     // onSettled: () => {
     //   queryClient.invalidateQueries({ queryKey: commentQueryKeys.byPost(postId) })
     // },
@@ -79,7 +70,15 @@ export const CommentItem = ({ comment, postId, searchQuery }: CommentItemProps) 
         >
           <Edit2 className="w-3 h-3" />
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id)} disabled={isDeleting}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() =>
+            open(({ isOpen, close }) => (
+              <DeleteCommentDialog comment={comment} postId={postId} isOpen={isOpen} close={close} />
+            ))
+          }
+        >
           <Trash2 className="w-3 h-3" />
         </Button>
       </div>
