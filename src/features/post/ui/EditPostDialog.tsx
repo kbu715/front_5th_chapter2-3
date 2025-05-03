@@ -42,7 +42,8 @@ export const EditPostDialog = ({ post, isOpen, close }: EditPostDialogProps) => 
           posts: old.posts.map((post) => (post.id === data.id ? data : post)),
         }
       })
-
+    },
+    onSettled: () => {
       close()
     },
   })

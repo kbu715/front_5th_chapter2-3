@@ -20,6 +20,8 @@ export const DeleteCommentDialog = ({ comment, postId, isOpen, close }: DeleteCo
       queryClient.setQueryData(commentQueryKeys.byPost(postId), (old: Comment[]) =>
         old.filter((c) => c.id !== comment.id),
       )
+    },
+    onSettled: () => {
       close()
     },
   })

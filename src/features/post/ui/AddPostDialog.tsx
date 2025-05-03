@@ -43,6 +43,8 @@ export const AddPostDialog = ({
           total: old.total + 1,
         }
       })
+    },
+    onSettled: () => {
       close()
     },
   })

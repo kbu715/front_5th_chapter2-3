@@ -27,6 +27,8 @@ export const DeletePostDialog = ({ post, isOpen, close }: DeletePostDialogProps)
           total: old.total - 1,
         }
       })
+    },
+    onSettled: () => {
       close()
     },
   })

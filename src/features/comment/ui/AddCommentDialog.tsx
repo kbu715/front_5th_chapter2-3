@@ -33,6 +33,8 @@ export const AddCommentDialog = ({ postId, isOpen, close }: AddCommentDialogProp
       queryClient.setQueryData(commentQueryKeys.byPost(postId), (old: Comment[]) => {
         return [...old, { ...data, likes: 0 }]
       })
+    },
+    onSettled: () => {
       close()
     },
   })

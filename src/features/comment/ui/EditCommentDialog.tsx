@@ -34,7 +34,8 @@ export const EditCommentDialog = ({ comment, isOpen, close }: EditCommentDialogP
       queryClient.setQueryData(commentQueryKeys.byPost(comment.postId), (old: Comment[]) =>
         old.map((c) => (c.id === comment.id ? data : c)),
       )
-
+    },
+    onSettled: () => {
       close()
     },
   })
