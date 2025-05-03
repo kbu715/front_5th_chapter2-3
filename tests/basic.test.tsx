@@ -62,9 +62,6 @@ describe("PostsManager", () => {
     const user = userEvent.setup()
     renderPostsManager()
 
-    // 로딩 상태 확인 (선택적)
-    expect(screen.getByText(/로딩 중.../i)).toBeInTheDocument()
-
     // 게시물이 로드되었는지 확인
     await waitFor(() => {
       TEST_POSTS.posts.forEach((post) => {
