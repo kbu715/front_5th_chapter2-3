@@ -1,7 +1,7 @@
 import { Dialog } from "../../../shared/ui"
 import { UserInfo } from "../../../entities/user/ui"
-import { useUserQuery } from "../../../entities/user/model/hooks/queries/useUserQuery"
 import { UserInfoSkeleton } from "./UserInfoSkeleton"
+import { useUserQuery } from "../../../entities/user/model/hooks/queries"
 interface UserModalProps {
   userId: number
   isOpen: boolean
@@ -22,7 +22,7 @@ export const UserModal = ({ userId, isOpen, close }: UserModalProps) => {
     >
       <Dialog.Content>
         <Dialog.Header>
-          <Dialog.Title>사용자 정보</Dialog.Title>
+          <Dialog.Title className="flex items-center justify-center">사용자 정보</Dialog.Title>
         </Dialog.Header>
         {!user ? <UserInfoSkeleton /> : <UserInfo user={user} />}
       </Dialog.Content>

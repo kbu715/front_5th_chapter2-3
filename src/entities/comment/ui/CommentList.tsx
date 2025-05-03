@@ -1,5 +1,5 @@
-import { CommentItem } from "./CommentItem"
-import { Comment } from "../../../entities/comment/model/types"
+import { CommentItem } from "../../../features/comment/ui/CommentItem"
+import { Comment } from "../model/types"
 interface CommentListProps {
   comments: Comment[]
   postId: number
