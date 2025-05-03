@@ -1,7 +1,7 @@
 import { usePostQueryParams } from "../../features/post/model/hooks"
 import { usePostsIntersectionQuery } from "../../entities/post/model/hooks/queries"
 import { useUsersQuery } from "../../entities/user/model/hooks/queries"
-import { PostController, PostPagination, PostTable } from "../../features/post/ui"
+import { PostController, PostPagination, PostTable, PostTableSkeleton } from "../../features/post/ui"
 
 export const PostWidget = () => {
   const { params, setters } = usePostQueryParams()
@@ -26,7 +26,7 @@ export const PostWidget = () => {
     <div className="flex flex-col gap-4">
       <PostController />
       {loading ? (
-        <div className="flex justify-center p-4">로딩 중...</div>
+        <PostTableSkeleton />
       ) : (
         <PostTable
           posts={postsWithUsers}

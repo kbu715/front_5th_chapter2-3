@@ -10,6 +10,7 @@ import { useOverlay } from "../../../shared/lib/overlay"
 import { UserModal } from "../../user/ui"
 import { EditPostDialog } from "./EditPostDialog"
 import { PostDetailModal } from "./PostDetailModal"
+import { PostTableHeader } from "./PostTableHeader"
 
 type PostWithAuthor = Post & { author?: User }
 
@@ -41,15 +42,7 @@ export const PostTable = ({ posts, searchQuery, selectedTag, onSelectTag }: Post
 
   return (
     <Table>
-      <Table.Header>
-        <Table.Row>
-          <Table.Head className="w-[50px]">ID</Table.Head>
-          <Table.Head>제목</Table.Head>
-          <Table.Head className="w-[150px]">작성자</Table.Head>
-          <Table.Head className="w-[150px]">반응</Table.Head>
-          <Table.Head className="w-[150px]">작업</Table.Head>
-        </Table.Row>
-      </Table.Header>
+      <PostTableHeader />
       <Table.Body>
         {posts.map((post) => (
           <Table.Row key={post.id}>
