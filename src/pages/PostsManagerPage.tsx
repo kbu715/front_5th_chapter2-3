@@ -12,7 +12,10 @@ const PostsManager = () => {
       <Card.Header>
         <Card.Title className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <Button onClick={() => open(({ isOpen, close }) => <AddPostDialog isOpen={isOpen} close={close} />)}>
+          <Button
+            className="animated-background bg-gradient-to-r from-blue-500 via-blue-700 to-indigo-700"
+            onClick={() => open(({ isOpen, close }) => <AddPostDialog isOpen={isOpen} close={close} />)}
+          >
             <Plus className="w-4 h-4 mr-2" />
             게시물 추가
           </Button>
