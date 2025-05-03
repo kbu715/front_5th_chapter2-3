@@ -5,7 +5,7 @@ import App from "./App"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Router>
+    <Router basename={import.meta.env.VITE_BASE_PATH}>
       <App />
     </Router>
   </React.StrictMode>,
