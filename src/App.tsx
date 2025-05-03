@@ -8,7 +8,7 @@ import { OverlayProvider } from "./shared/lib/overlay/OverlayProvider.tsx"
 const App = () => {
   return (
     <AppQueryClientProvider>
-      <Router>
+      <Router basename={import.meta.env.VITE_BASE_PATH}>
         <OverlayProvider>
           <div className="flex flex-col min-h-screen">
             <Header />
