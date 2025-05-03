@@ -1,12 +1,11 @@
 import { Button, Dialog, HighlightedText } from "../../../shared/ui"
-import { CommentList } from "../../comment/ui/CommentList"
 import { usePostQueryParams } from "../model/hooks"
 import { Post } from "../../../entities/post/model/types"
 import { useCommentsQuery } from "../../../entities/comment/model/hooks/queries"
 import { Plus } from "lucide-react"
 import { AddCommentDialog } from "../../comment/ui/AddCommentDialog"
 import { useOverlay } from "../../../shared/lib/overlay"
-import { CommentListSkeleton } from "../../comment/ui"
+import { CommentList, CommentListSkeleton } from "../../../entities/comment/ui"
 
 interface PostDetailModalProps {
   post: Post
@@ -55,7 +54,6 @@ export const PostDetailModal = ({ post, isOpen, close }: PostDetailModalProps) =
             {isLoading ? (
               <CommentListSkeleton />
             ) : (
-              post?.id &&
               comments &&
               comments.length > 0 && <CommentList comments={comments} postId={post.id} searchQuery={searchQuery} />
             )}
