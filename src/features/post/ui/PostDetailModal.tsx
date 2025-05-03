@@ -6,7 +6,7 @@ import { useCommentsQuery } from "../../../entities/comment/model/hooks/queries"
 import { Plus } from "lucide-react"
 import { AddCommentDialog } from "../../comment/ui/AddCommentDialog"
 import { useOverlay } from "../../../shared/lib/overlay"
-import { CommentListSkeleton } from "../../comment/ui/CommentListSkeleton"
+import { CommentListSkeleton } from "../../comment/ui"
 
 interface PostDetailModalProps {
   post: Post
