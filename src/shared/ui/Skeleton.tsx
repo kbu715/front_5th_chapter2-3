@@ -13,6 +13,9 @@ const Skeleton = ({ className }: Props) => {
         "after:bg-gradient-to-r after:from-[transparent] after:via-[rgba(255,255,255,0.2)] after:to-[transparent]",
         className,
       ])}
+      role="status"
+      aria-busy="true"
+      aria-live="polite"
     />
   )
 }
