@@ -3,7 +3,7 @@ import { usePostsIntersectionQuery } from "../../entities/post/model/hooks/queri
 import { useUsersQuery } from "../../entities/user/model/hooks/queries"
 import { PostController, PostPagination, PostTable, PostTableSkeleton } from "../../features/post/ui"
 
-export const PostWidget = () => {
+export const PostBoard = () => {
   const { params, setters } = usePostQueryParams()
   const { search: searchQuery, tag: selectedTag, limit, skip } = params
   const { setTag: setSelectedTag } = setters

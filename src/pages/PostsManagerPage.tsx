@@ -2,7 +2,7 @@ import { Plus } from "lucide-react"
 import { Button, Card } from "../shared/ui"
 import { AddPostDialog } from "../features/post/ui"
 import { useOverlay } from "../shared/lib/overlay"
-import { PostWidget } from "../widgets/ui/PostWidget"
+import { PostBoard } from "../widgets/ui/PostBoard"
 
 const PostsManager = () => {
   const { open } = useOverlay()
@@ -19,7 +19,7 @@ const PostsManager = () => {
         </Card.Title>
       </Card.Header>
       <Card.Content>
-        <PostWidget />
+        <PostBoard />
       </Card.Content>
     </Card>
   )
