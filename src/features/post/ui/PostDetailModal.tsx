@@ -5,7 +5,7 @@ import { useCommentsQuery } from "../../../entities/comment/model/hooks/queries"
 import { Plus } from "lucide-react"
 import { AddCommentDialog } from "../../comment/ui/AddCommentDialog"
 import { useOverlay } from "../../../shared/lib/overlay"
-import { CommentList, CommentListSkeleton } from "../../../entities/comment/ui"
+import { CommentList, CommentListSkeleton, NoComments } from "../../../entities/comment/ui"
 
 interface PostDetailModalProps {
   post: Post
@@ -53,9 +53,10 @@ export const PostDetailModal = ({ post, isOpen, close }: PostDetailModalProps) =
             </div>
             {isLoading ? (
               <CommentListSkeleton />
+            ) : comments && comments.length > 0 ? (
+              <CommentList comments={comments} postId={post.id} searchQuery={searchQuery} />
             ) : (
-              comments &&
-              comments.length > 0 && <CommentList comments={comments} postId={post.id} searchQuery={searchQuery} />
+              <NoComments />
             )}
           </div>
         </div>
