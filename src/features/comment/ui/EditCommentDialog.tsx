@@ -19,7 +19,7 @@ export const EditCommentDialog = ({ comment, isOpen, close }: EditCommentDialogP
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = useForm<CommentFormValues>({
     defaultValues: {
       body: "",
@@ -70,7 +70,7 @@ export const EditCommentDialog = ({ comment, isOpen, close }: EditCommentDialogP
         </Dialog.Header>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Textarea placeholder="댓글 내용" {...register("body", { required: true })} />
-          <Button type="submit" disabled={isSubmitting || isPending}>
+          <Button type="submit" disabled={isSubmitting || isPending || !isValid}>
             댓글 업데이트
           </Button>
         </form>

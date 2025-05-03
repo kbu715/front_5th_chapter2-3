@@ -20,7 +20,7 @@ export const EditPostDialog = ({ post, isOpen, close }: EditPostDialogProps) => 
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = useForm<PostFormValues>({
     defaultValues: {
       title: "",
@@ -82,7 +82,7 @@ export const EditPostDialog = ({ post, isOpen, close }: EditPostDialogProps) => 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input placeholder="제목" {...register("title", { required: true })} />
           <Textarea rows={15} placeholder="내용" {...register("body", { required: true })} />
-          <Button type="submit" disabled={isSubmitting || isPending}>
+          <Button type="submit" disabled={isSubmitting || isPending || !isValid}>
             게시물 업데이트
           </Button>
         </form>

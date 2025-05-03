@@ -18,7 +18,7 @@ export const AddCommentDialog = ({ postId, isOpen, close }: AddCommentDialogProp
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = useForm<CommentFormValues>({
     defaultValues: {
       body: "",
@@ -62,7 +62,7 @@ export const AddCommentDialog = ({ postId, isOpen, close }: AddCommentDialogProp
         </Dialog.Header>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Textarea placeholder="댓글 내용" {...register("body", { required: true })} />
-          <Button type="submit" disabled={isSubmitting || !postId}>
+          <Button type="submit" disabled={isSubmitting || !postId || !isValid}>
             댓글 추가
           </Button>
         </form>

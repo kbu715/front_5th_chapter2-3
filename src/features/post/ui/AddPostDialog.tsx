@@ -23,7 +23,7 @@ export const AddPostDialog = ({
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = useForm<PostFormValues>({
     defaultValues,
   })
@@ -79,7 +79,7 @@ export const AddPostDialog = ({
             })}
           />
 
-          <Button type="submit" disabled={isSubmitting || isPending}>
+          <Button type="submit" disabled={isSubmitting || isPending || !isValid}>
             게시물 추가
           </Button>
         </form>
