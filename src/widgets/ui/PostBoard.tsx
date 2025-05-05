@@ -1,5 +1,5 @@
 import { usePostQueryParams } from "../../features/post/model/hooks"
-import { usePostsIntersectionQuery } from "../../entities/post/model/hooks/queries"
+import { usePostsIntersectionQuery, usePrefetchPostsQuery } from "../../entities/post/model/hooks/queries"
 import { useUsersQuery } from "../../entities/user/model/hooks/queries"
 import { PostController, PostPagination, PostTable, PostTableSkeleton } from "../../features/post/ui"
 
@@ -21,6 +21,8 @@ export const PostBoard = () => {
       ...post,
       author: users?.find((user) => user.id === post.userId),
     })) || []
+
+  usePrefetchPostsQuery()
 
   return (
     <div className="flex flex-col gap-4">
