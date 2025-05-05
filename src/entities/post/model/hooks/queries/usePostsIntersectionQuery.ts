@@ -3,6 +3,7 @@ import { useSearchPostsQuery } from "./useSearchPostsQuery"
 import { usePostsByTagQuery } from "./usePostsByTagQuery"
 import { useMemo } from "react"
 import { intersectPostsById } from "../../../../../features/post/lib/util"
+import { keepPreviousData } from "@tanstack/react-query"
 
 export const usePostsIntersectionQuery = ({
   search,
@@ -15,7 +16,12 @@ export const usePostsIntersectionQuery = ({
   limit: number
   skip: number
 }) => {
-  const { data: allPosts, isLoading: isAllLoading } = usePostsQuery({ limit, skip })
+  const { data: allPosts, isLoading: isAllLoading } = usePostsQuery(
+    { limit, skip },
+    {
+      placeholderData: keepPreviousData,
+    },
+  )
   const { data: searchPosts, isLoading: isSearchLoading } = useSearchPostsQuery(search)
   const { data: tagPosts, isLoading: isTagLoading } = usePostsByTagQuery(tag)
 
