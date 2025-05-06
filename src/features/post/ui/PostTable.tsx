@@ -2,7 +2,7 @@ import { MessageSquare, Edit2, Trash2, ThumbsUp, ThumbsDown } from "lucide-react
 import { Button, Table, HighlightedText } from "@shared/ui"
 import { Post } from "@entities/post/model/types"
 import { User } from "@entities/user/model/types"
-import { UserModal } from "@features/user/ui"
+import { UserModal } from "@entities/user/ui"
 import { EditPostDialog } from "./EditPostDialog"
 import { PostDetailModal } from "./PostDetailModal"
 import { PostTableHeader } from "./PostTableHeader"

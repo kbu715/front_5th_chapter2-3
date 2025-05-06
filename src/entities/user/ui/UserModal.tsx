@@ -1,6 +1,5 @@
 import { Dialog } from "@shared/ui"
-import { UserInfo } from "@entities/user/ui"
-import { UserInfoSkeleton } from "./UserInfoSkeleton"
+import { UserInfo, UserInfoSkeleton } from "@entities/user/ui"
 import { useUserQuery } from "@entities/user/model/hooks/queries"
 interface UserModalProps {
   userId: number
