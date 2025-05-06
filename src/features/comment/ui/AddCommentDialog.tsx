@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form"
 import { useAddCommentMutation } from "@entities/comment/model/hooks/mutations"
 import { useQueryClient } from "@tanstack/react-query"
 import { commentQueryKeys } from "@entities/comment/model/queryKeys"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { addCommentFormSchema } from "@features/comment/model/schema"
 
-type CommentFormValues = Pick<Comment, "body" | "userId">
+type AddCommentFormValues = z.infer<typeof addCommentFormSchema>
 
 interface AddCommentDialogProps {
   postId: number
@@ -18,12 +21,13 @@ export const AddCommentDialog = ({ postId, isOpen, close }: AddCommentDialogProp
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isValid },
-  } = useForm<CommentFormValues>({
+    formState: { isSubmitting, errors },
+  } = useForm<AddCommentFormValues>({
     defaultValues: {
       body: "",
       userId: 1,
     },
+    resolver: zodResolver(addCommentFormSchema),
   })
 
   const queryClient = useQueryClient()
@@ -39,7 +43,7 @@ export const AddCommentDialog = ({ postId, isOpen, close }: AddCommentDialogProp
     },
   })
 
-  const onSubmit = (data: CommentFormValues) => {
+  const onSubmit = (data: AddCommentFormValues) => {
     if (!postId) return
     addComment({
       ...data,
@@ -64,7 +68,8 @@ export const AddCommentDialog = ({ postId, isOpen, close }: AddCommentDialogProp
         </Dialog.Header>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Textarea placeholder="댓글 내용" {...register("body", { required: true })} />
-          <Button type="submit" disabled={isSubmitting || !postId || !isValid}>
+          {errors.body && <p className="text-sm text-red-500">{errors.body.message}</p>}
+          <Button type="submit" disabled={isSubmitting || !postId}>
             댓글 추가
           </Button>
         </form>

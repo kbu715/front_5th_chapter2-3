@@ -1,15 +1,18 @@
 import { Button, Dialog, Input, Textarea } from "@shared/ui"
-import { Post, PostsResponse } from "@entities/post/model/types"
+import { PostsResponse } from "@entities/post/model/types"
 import { useForm } from "react-hook-form"
 import { useAddPostMutation } from "@entities/post/model/hooks/mutations"
 import { postQueryKeys } from "@entities/post/model/queryKeys"
 import { useQueryClient } from "@tanstack/react-query"
 import { usePostQueryParams } from "@features/post/model/hooks"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { addPostFormSchema } from "@features/post/model/schema"
 
-type PostFormValues = Pick<Post, "title" | "body" | "userId">
+type AddPostFormValues = z.infer<typeof addPostFormSchema>
 
 interface AddPostDialogProps {
-  defaultValues?: PostFormValues
+  defaultValues?: AddPostFormValues
   isOpen: boolean
   close: () => void
 }
@@ -23,9 +26,10 @@ export const AddPostDialog = ({
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isValid },
-  } = useForm<PostFormValues>({
+    formState: { isSubmitting, errors },
+  } = useForm<AddPostFormValues>({
     defaultValues,
+    resolver: zodResolver(addPostFormSchema),
   })
 
   const queryClient = useQueryClient()
@@ -49,7 +53,7 @@ export const AddPostDialog = ({
     },
   })
 
-  const onSubmit = (data: PostFormValues) => {
+  const onSubmit = (data: AddPostFormValues) => {
     addPost(data)
     reset()
   }
@@ -70,7 +74,9 @@ export const AddPostDialog = ({
         </Dialog.Header>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input id="title" placeholder="제목" {...register("title", { required: true })} />
+          {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
           <Textarea id="body" rows={10} placeholder="내용" {...register("body", { required: true })} />
+          {errors.body && <p className="text-sm text-red-500">{errors.body.message}</p>}
           <Input
             id="userId"
             type="number"
@@ -80,8 +86,8 @@ export const AddPostDialog = ({
               valueAsNumber: true,
             })}
           />
-
-          <Button type="submit" disabled={isSubmitting || isPending || !isValid}>
+          {errors.userId && <p className="text-sm text-red-500">{errors.userId.message}</p>}
+          <Button type="submit" disabled={isSubmitting || isPending}>
             게시물 추가
           </Button>
         </form>

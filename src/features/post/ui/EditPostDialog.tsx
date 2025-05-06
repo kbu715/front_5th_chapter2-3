@@ -6,9 +6,11 @@ import { useUpdatePostMutation } from "@entities/post/model/hooks/mutations"
 import { useQueryClient } from "@tanstack/react-query"
 import { postQueryKeys } from "@entities/post/model/queryKeys"
 import { usePostQueryParams } from "@features/post/model/hooks"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { editPostFormSchema } from "@features/post/model/schema"
 
-type PostFormValues = Pick<Post, "title" | "body">
-
+type EditPostFormValues = z.infer<typeof editPostFormSchema>
 interface EditPostDialogProps {
   post: Post | null
   isOpen: boolean
@@ -20,12 +22,13 @@ export const EditPostDialog = ({ post, isOpen, close }: EditPostDialogProps) => 
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isValid },
-  } = useForm<PostFormValues>({
+    formState: { isSubmitting, errors },
+  } = useForm<EditPostFormValues>({
     defaultValues: {
       title: "",
       body: "",
     },
+    resolver: zodResolver(editPostFormSchema),
   })
 
   const queryClient = useQueryClient()
@@ -57,7 +60,7 @@ export const EditPostDialog = ({ post, isOpen, close }: EditPostDialogProps) => 
     }
   }, [post])
 
-  const onSubmit = (data: PostFormValues) => {
+  const onSubmit = (data: EditPostFormValues) => {
     if (!post) return
 
     updatePost({
@@ -82,8 +85,10 @@ export const EditPostDialog = ({ post, isOpen, close }: EditPostDialogProps) => 
         </Dialog.Header>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input placeholder="제목" {...register("title", { required: true })} />
+          {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
           <Textarea rows={15} placeholder="내용" {...register("body", { required: true })} />
-          <Button type="submit" disabled={isSubmitting || isPending || !isValid}>
+          {errors.body && <p className="text-sm text-red-500">{errors.body.message}</p>}
+          <Button type="submit" disabled={isSubmitting || isPending}>
             게시물 업데이트
           </Button>
         </form>

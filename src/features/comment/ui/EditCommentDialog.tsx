@@ -5,8 +5,11 @@ import { useEffect } from "react"
 import { useUpdateCommentMutation } from "@entities/comment/model/hooks/mutations/useUpdateCommentMutation"
 import { useQueryClient } from "@tanstack/react-query"
 import { commentQueryKeys } from "@entities/comment/model/queryKeys"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { editCommentFormSchema } from "@features/comment/model/schema"
 
-type CommentFormValues = Pick<Comment, "body">
+type EditCommentFormValues = z.infer<typeof editCommentFormSchema>
 
 interface EditCommentDialogProps {
   comment: Comment
@@ -19,11 +22,12 @@ export const EditCommentDialog = ({ comment, isOpen, close }: EditCommentDialogP
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isValid },
-  } = useForm<CommentFormValues>({
+    formState: { isSubmitting, errors },
+  } = useForm<EditCommentFormValues>({
     defaultValues: {
       body: "",
     },
+    resolver: zodResolver(editCommentFormSchema),
   })
   const queryClient = useQueryClient()
 
@@ -40,7 +44,7 @@ export const EditCommentDialog = ({ comment, isOpen, close }: EditCommentDialogP
     },
   })
 
-  const onSubmit = (data: CommentFormValues) => {
+  const onSubmit = (data: EditCommentFormValues) => {
     updateComment({
       ...comment,
       ...data,
@@ -71,7 +75,8 @@ export const EditCommentDialog = ({ comment, isOpen, close }: EditCommentDialogP
         </Dialog.Header>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Textarea placeholder="댓글 내용" {...register("body", { required: true })} />
-          <Button type="submit" disabled={isSubmitting || isPending || !isValid}>
+          {errors.body && <p className="text-sm text-red-500">{errors.body.message}</p>}
+          <Button type="submit" disabled={isSubmitting || isPending}>
             댓글 업데이트
           </Button>
         </form>
