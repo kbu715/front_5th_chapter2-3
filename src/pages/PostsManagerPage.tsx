@@ -1,9 +1,9 @@
 import { Plus } from "lucide-react"
-import { Button, Card, LoadingDots } from "../shared/ui"
-import { AddPostDialog } from "../features/post/ui"
-import { useOverlay } from "../shared/lib/overlay"
-import { PostBoard } from "../widgets/ui/PostBoard"
+import { Button, Card, LoadingDots } from "@shared/ui"
+import { AddPostDialog } from "@features/post/ui"
+import { PostBoard } from "@widgets/ui/PostBoard"
 import { useIsMutating } from "@tanstack/react-query"
+import { useOverlay } from "@shared/lib"
 
 const PostsManager = () => {
   const { open } = useOverlay()

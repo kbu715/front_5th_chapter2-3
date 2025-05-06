@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { CustomMutationOptions } from "../../../../../shared/lib/types"
-import { Post } from "../../types"
-import { addPost } from "../../../api"
+import { CustomMutationOptions } from "@shared/lib/types"
+import { Post } from "@entities/post/model/types"
+import { addPost } from "@entities/post/api"
 
 interface AddPostRequest {
   title: string

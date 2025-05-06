@@ -1,9 +1,9 @@
-import { Button, Dialog, Textarea } from "../../../shared/ui"
-import { Comment } from "../../../entities/comment/model/types"
+import { Button, Dialog, Textarea } from "@shared/ui"
+import { Comment } from "@entities/comment/model/types"
 import { useForm } from "react-hook-form"
-import { useAddCommentMutation } from "../../../entities/comment/model/hooks/mutations"
+import { useAddCommentMutation } from "@entities/comment/model/hooks/mutations"
 import { useQueryClient } from "@tanstack/react-query"
-import { commentQueryKeys } from "../../../entities/comment/model/queryKeys"
+import { commentQueryKeys } from "@entities/comment/model/queryKeys"
 
 type CommentFormValues = Pick<Comment, "body" | "userId">
 

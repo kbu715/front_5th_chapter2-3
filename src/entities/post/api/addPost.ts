@@ -1,5 +1,5 @@
-import { Post } from "../model/types"
-import { axiosInstance } from "../../../shared/lib/axios"
+import { Post } from "@entities/post/model/types"
+import { axiosInstance } from "@shared/lib/axios"
 
 interface AddPostRequest {
   title: string

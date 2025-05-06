@@ -1,10 +1,10 @@
-import { Button, Dialog, Input, Textarea } from "../../../shared/ui"
-import { Post, PostsResponse } from "../../../entities/post/model/types"
+import { Button, Dialog, Input, Textarea } from "@shared/ui"
+import { Post, PostsResponse } from "@entities/post/model/types"
 import { useForm } from "react-hook-form"
-import { useAddPostMutation } from "../../../entities/post/model/hooks/mutations"
-import { postQueryKeys } from "../../../entities/post/model/queryKeys"
+import { useAddPostMutation } from "@entities/post/model/hooks/mutations"
+import { postQueryKeys } from "@entities/post/model/queryKeys"
 import { useQueryClient } from "@tanstack/react-query"
-import { usePostQueryParams } from "../model/hooks"
+import { usePostQueryParams } from "@features/post/model/hooks"
 
 type PostFormValues = Pick<Post, "title" | "body" | "userId">
 

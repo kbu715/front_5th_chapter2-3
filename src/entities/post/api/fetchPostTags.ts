@@ -1,5 +1,5 @@
-import { Tag } from "../model/types"
-import { axiosInstance } from "../../../shared/lib/axios"
+import { Tag } from "@entities/post/model/types"
+import { axiosInstance } from "@shared/lib/axios"
 
 export const fetchPostTags = async (): Promise<Tag[]> => {
   try {

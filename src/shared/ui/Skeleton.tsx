@@ -4,7 +4,7 @@ type Props = {
   className?: string
 }
 
-const Skeleton = ({ className }: Props) => {
+export const Skeleton = ({ className }: Props) => {
   return (
     <span
       className={cn([
@@ -19,5 +19,3 @@ const Skeleton = ({ className }: Props) => {
     />
   )
 }
-
-export default Skeleton

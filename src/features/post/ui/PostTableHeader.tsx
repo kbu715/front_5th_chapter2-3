@@ -1,4 +1,4 @@
-import { Table } from "../../../shared/ui"
+import { Table } from "@shared/ui"
 
 export const PostTableHeader = () => {
   return (

@@ -1,6 +1,6 @@
 import { Search } from "lucide-react"
-import { Input } from "../../../shared/ui"
-import { usePostQueryParams } from "../model/hooks"
+import { Input } from "@shared/ui"
+import { usePostQueryParams } from "@features/post/model/hooks"
 import { useState } from "react"
 
 export const PostSearchInput = () => {

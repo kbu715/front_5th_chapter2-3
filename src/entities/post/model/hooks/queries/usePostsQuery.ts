@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { fetchPosts } from "../../../api"
-import { CustomQueryOptions } from "../../../../../shared/lib/types"
-import { PromiseResolvedReturnType } from "../../../../../shared/lib/types"
-import { postQueryKeys } from "../../queryKeys"
+import { fetchPosts } from "@entities/post/api"
+import { CustomQueryOptions } from "@shared/lib/types"
+import { PromiseResolvedReturnType } from "@shared/lib/types"
+import { postQueryKeys } from "@entities/post/model/queryKeys"
 import { useEffect } from "react"
-import { usePostQueryParams } from "../../../../../features/post/model/hooks"
+import { usePostQueryParams } from "@features/post/model/hooks"
 
 type QueryFnData = PromiseResolvedReturnType<typeof fetchPosts>
 

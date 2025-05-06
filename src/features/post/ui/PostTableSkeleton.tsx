@@ -1,5 +1,4 @@
-import { Table } from "../../../shared/ui"
-import Skeleton from "../../../shared/ui/Skeleton"
+import { Table, Skeleton } from "@shared/ui"
 import { PostTableHeader } from "./PostTableHeader"
 
 export const PostTableSkeleton = () => {

@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { CustomMutationOptions } from "../../../../../shared/lib/types"
-import { addComment } from "../../../api"
-import { Comment } from "../../types"
+import { CustomMutationOptions } from "@shared/lib/types"
+import { addComment } from "@entities/comment/api"
+import { Comment } from "@entities/comment/model/types"
 
 type AddCommentRequest = Pick<Comment, "body" | "postId" | "userId">
 

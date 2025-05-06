@@ -1,5 +1,5 @@
-import { Comment } from "../model/types"
-import { axiosInstance } from "../../../shared/lib/axios"
+import { Comment } from "@entities/comment/model/types"
+import { axiosInstance } from "@shared/lib/axios"
 
 type AddCommentRequest = Pick<Comment, "body" | "postId" | "userId">
 

@@ -1,5 +1,4 @@
-import Skeleton from "../../../shared/ui/Skeleton"
-import { Card } from "../../../shared/ui/Card"
+import { Skeleton, Card } from "@shared/ui"
 
 export const UserInfoSkeleton = () => {
   return (

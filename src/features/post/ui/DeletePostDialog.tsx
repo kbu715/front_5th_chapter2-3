@@ -1,10 +1,10 @@
-import { Dialog, Button } from "../../../shared/ui"
+import { Dialog, Button } from "@shared/ui"
 import { useQueryClient } from "@tanstack/react-query"
-import { usePostQueryParams } from "../../../features/post/model/hooks"
-import { PostsResponse } from "../../../entities/post/model/types"
-import { Post } from "../../../entities/post/model/types"
-import { useDeletePostMutation } from "../../../entities/post/model/hooks/mutations"
-import { postQueryKeys } from "../../../entities/post/model/queryKeys"
+import { usePostQueryParams } from "@features/post/model/hooks"
+import { PostsResponse } from "@entities/post/model/types"
+import { Post } from "@entities/post/model/types"
+import { useDeletePostMutation } from "@entities/post/model/hooks/mutations"
+import { postQueryKeys } from "@entities/post/model/queryKeys"
 import { useCallback } from "react"
 
 interface DeletePostDialogProps {

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { PromiseResolvedReturnType } from "../../../../../shared/lib/types"
-import { CustomQueryOptions } from "../../../../../shared/lib/types"
-import { fetchPostsByTag } from "../../../api"
-import { postQueryKeys } from "../../queryKeys"
+import { PromiseResolvedReturnType } from "@shared/lib/types"
+import { CustomQueryOptions } from "@shared/lib/types"
+import { fetchPostsByTag } from "@entities/post/api"
+import { postQueryKeys } from "@entities/post/model/queryKeys"
 
 type QueryFnData = PromiseResolvedReturnType<typeof fetchPostsByTag>
 

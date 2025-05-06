@@ -1,14 +1,14 @@
 import { MessageSquare, Edit2, Trash2, ThumbsUp, ThumbsDown } from "lucide-react"
-import { Button, Table, HighlightedText } from "../../../shared/ui"
-import { Post } from "../../../entities/post/model/types"
-import { User } from "../../../entities/user/model/types"
-import { useOverlay } from "../../../shared/lib/overlay"
-import { UserModal } from "../../user/ui"
+import { Button, Table, HighlightedText } from "@shared/ui"
+import { Post } from "@entities/post/model/types"
+import { User } from "@entities/user/model/types"
+import { UserModal } from "@features/user/ui"
 import { EditPostDialog } from "./EditPostDialog"
 import { PostDetailModal } from "./PostDetailModal"
 import { PostTableHeader } from "./PostTableHeader"
 import { DeletePostDialog } from "./DeletePostDialog"
-import { NoPost } from "../../../entities/post/ui"
+import { NoPost } from "@entities/post/ui"
+import { useOverlay } from "@shared/lib"
 
 type PostWithAuthor = Post & { author?: User }
 

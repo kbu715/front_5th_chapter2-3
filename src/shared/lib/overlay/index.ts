@@ -1,2 +1,2 @@
-export { OverlayProvider, OverlayContext } from "./OverlayProvider"
-export { useOverlay } from "./useOverlay"
+export * from "./OverlayProvider"
+export * from "./useOverlay"

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { PromiseResolvedReturnType } from "../../../../../shared/lib/types"
-import { fetchUserById } from "../../../api"
-import { CustomQueryOptions } from "../../../../../shared/lib/types"
-import { userQueryKeys } from "../../queryKeys"
+import { PromiseResolvedReturnType } from "@shared/lib/types"
+import { fetchUserById } from "@entities/user/api"
+import { CustomQueryOptions } from "@shared/lib/types"
+import { userQueryKeys } from "@entities/user/model/queryKeys"
 
 type QueryFnData = PromiseResolvedReturnType<typeof fetchUserById>
 

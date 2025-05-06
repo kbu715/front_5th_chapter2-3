@@ -1,8 +1,8 @@
-import { usePostsQuery } from "./usePostsQuery"
-import { useSearchPostsQuery } from "./useSearchPostsQuery"
-import { usePostsByTagQuery } from "./usePostsByTagQuery"
+import { usePostsQuery } from "@entities/post/model/hooks/queries/usePostsQuery"
+import { useSearchPostsQuery } from "@entities/post/model/hooks/queries/useSearchPostsQuery"
+import { usePostsByTagQuery } from "@entities/post/model/hooks/queries/usePostsByTagQuery"
 import { useMemo } from "react"
-import { intersectPostsById } from "../../../../../features/post/lib/util"
+import { intersectPostsById } from "@features/post/lib/util"
 import { keepPreviousData } from "@tanstack/react-query"
 
 export const usePostsIntersectionQuery = ({

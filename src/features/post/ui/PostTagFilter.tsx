@@ -1,5 +1,5 @@
-import { usePostTagsQuery } from "../../../entities/post/model/hooks/queries"
-import { Select } from "../../../shared/ui"
+import { usePostTagsQuery } from "@entities/post/model/hooks/queries"
+import { Select } from "@shared/ui"
 
 interface PostTagFilterProps {
   selectedTag: string

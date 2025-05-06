@@ -1,5 +1,5 @@
-import { Pagination } from "../../../shared/ui"
-import { usePostQueryParams } from "../model/hooks"
+import { Pagination } from "@shared/ui"
+import { usePostQueryParams } from "@features/post/model/hooks"
 
 interface PostPaginationProps {
   total: number

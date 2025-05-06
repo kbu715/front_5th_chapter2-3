@@ -1,5 +1,5 @@
-import { UsersResponse } from "../model/types"
-import { axiosInstance } from "../../../shared/lib/axios"
+import { UsersResponse } from "@entities/user/model/types"
+import { axiosInstance } from "@shared/lib/axios"
 
 export const fetchUsers = async (): Promise<UsersResponse> => {
   try {

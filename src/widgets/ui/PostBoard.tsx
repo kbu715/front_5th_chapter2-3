@@ -1,7 +1,7 @@
-import { usePostQueryParams } from "../../features/post/model/hooks"
-import { usePostsIntersectionQuery, usePrefetchPostsQuery } from "../../entities/post/model/hooks/queries"
-import { useUsersQuery } from "../../entities/user/model/hooks/queries"
-import { PostController, PostPagination, PostTable, PostTableSkeleton } from "../../features/post/ui"
+import { usePostQueryParams, usePostsIntersectionQuery } from "@features/post/model/hooks"
+import { usePrefetchPostsQuery } from "@entities/post/model/hooks/queries"
+import { useUsersQuery } from "@entities/user/model/hooks/queries"
+import { PostController, PostPagination, PostTable, PostTableSkeleton } from "@features/post/ui"
 
 export const PostBoard = () => {
   const { params, setters } = usePostQueryParams()

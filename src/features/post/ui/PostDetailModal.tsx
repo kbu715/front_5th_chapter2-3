@@ -1,11 +1,11 @@
-import { Button, Dialog, HighlightedText } from "../../../shared/ui"
-import { usePostQueryParams } from "../model/hooks"
-import { Post } from "../../../entities/post/model/types"
-import { useCommentsQuery } from "../../../entities/comment/model/hooks/queries"
+import { Button, Dialog, HighlightedText } from "@shared/ui"
+import { usePostQueryParams } from "@features/post/model/hooks"
+import { Post } from "@entities/post/model/types"
+import { useCommentsQuery } from "@entities/comment/model/hooks/queries"
 import { Plus } from "lucide-react"
-import { AddCommentDialog } from "../../comment/ui/AddCommentDialog"
-import { useOverlay } from "../../../shared/lib/overlay"
-import { CommentList, CommentListSkeleton, NoComments } from "../../../entities/comment/ui"
+import { AddCommentDialog } from "@features/comment/ui/AddCommentDialog"
+import { CommentList, CommentListSkeleton, NoComments } from "@entities/comment/ui"
+import { useOverlay } from "@shared/lib"
 
 interface PostDetailModalProps {
   post: Post

@@ -1,5 +1,5 @@
-import { User } from "../model/types"
-import { Card } from "../../../shared/ui/Card"
+import { User } from "@entities/user/model/types"
+import { Card } from "@shared/ui/Card"
 
 interface UserInfoProps {
   user: User

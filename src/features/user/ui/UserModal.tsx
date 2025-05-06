@@ -1,7 +1,7 @@
-import { Dialog } from "../../../shared/ui"
-import { UserInfo } from "../../../entities/user/ui"
+import { Dialog } from "@shared/ui"
+import { UserInfo } from "@entities/user/ui"
 import { UserInfoSkeleton } from "./UserInfoSkeleton"
-import { useUserQuery } from "../../../entities/user/model/hooks/queries"
+import { useUserQuery } from "@entities/user/model/hooks/queries"
 interface UserModalProps {
   userId: number
   isOpen: boolean

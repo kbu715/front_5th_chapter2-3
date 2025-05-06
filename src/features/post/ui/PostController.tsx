@@ -1,4 +1,4 @@
-import { usePostQueryParams } from "../model/hooks"
+import { usePostQueryParams } from "@features/post/model/hooks"
 import { PostSearchInput } from "./PostSearchInput"
 import { PostSortBySelect } from "./PostSortBySelect"
 import { PostSortSelect } from "./PostSortSelect"

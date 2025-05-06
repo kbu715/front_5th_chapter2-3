@@ -1,4 +1,4 @@
-import { axiosInstance } from "../../../shared/lib/axios"
+import { axiosInstance } from "@shared/lib/axios"
 
 export const deletePost = async (id: number): Promise<void> => {
   try {

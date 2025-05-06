@@ -1,4 +1,4 @@
-import { Select } from "../../../shared/ui"
+import { Select } from "@shared/ui"
 
 interface PostSortBySelectProps {
   value: string

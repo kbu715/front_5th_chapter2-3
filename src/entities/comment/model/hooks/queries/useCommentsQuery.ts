@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { PromiseResolvedReturnType } from "../../../../../shared/lib/types"
-import { fetchComments } from "../../../api"
-import { CustomQueryOptions } from "../../../../../shared/lib/types"
-import { commentQueryKeys } from "../../queryKeys"
+import { PromiseResolvedReturnType } from "@shared/lib/types"
+import { fetchComments } from "@entities/comment/api"
+import { CustomQueryOptions } from "@shared/lib/types"
+import { commentQueryKeys } from "@entities/comment/model/queryKeys"
 
 type QueryFnData = PromiseResolvedReturnType<typeof fetchComments>
 

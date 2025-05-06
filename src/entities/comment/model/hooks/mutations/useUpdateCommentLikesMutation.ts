@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import { updateCommentLikes } from "../../../api/updateCommentLikes"
-import { CustomMutationOptions } from "../../../../../shared/lib/types"
-import { Comment } from "../../../model/types"
+import { updateCommentLikes } from "@entities/comment/api"
+import { CustomMutationOptions } from "@shared/lib/types"
+import { Comment } from "@entities/comment/model/types"
 
 interface UpdateCommentLikesRequest {
   id: number

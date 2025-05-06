@@ -1,12 +1,12 @@
 import { ThumbsUp, Edit2, Trash2 } from "lucide-react"
-import { HighlightedText, Button } from "../../../shared/ui"
-import { Comment } from "../../../entities/comment/model/types"
-import { useUpdateCommentLikesMutation } from "../../../entities/comment/model/hooks/mutations"
+import { HighlightedText, Button } from "@shared/ui"
+import { Comment } from "@entities/comment/model/types"
+import { useUpdateCommentLikesMutation } from "@entities/comment/model/hooks/mutations"
 import { useQueryClient } from "@tanstack/react-query"
-import { commentQueryKeys } from "../../../entities/comment/model/queryKeys"
-import { useOverlay } from "../../../shared/lib/overlay"
+import { commentQueryKeys } from "@entities/comment/model/queryKeys"
 import { EditCommentDialog } from "./EditCommentDialog"
 import { DeleteCommentDialog } from "./DeleteCommentDialog"
+import { useOverlay } from "@shared/lib"
 
 interface CommentItemProps {
   comment: Comment

@@ -1,5 +1,5 @@
-import { PostsResponse } from "../model/types"
-import { axiosInstance } from "../../../shared/lib/axios"
+import { PostsResponse } from "@entities/post/model/types"
+import { axiosInstance } from "@shared/lib/axios"
 
 export const searchPosts = async (query: string): Promise<PostsResponse> => {
   try {

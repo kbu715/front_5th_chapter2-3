@@ -1,8 +1,8 @@
-import { Dialog, Button } from "../../../shared/ui"
+import { Dialog, Button } from "@shared/ui"
 import { useQueryClient } from "@tanstack/react-query"
-import { Comment } from "../../../entities/comment/model/types"
-import { useDeleteCommentMutation } from "../../../entities/comment/model/hooks/mutations"
-import { commentQueryKeys } from "../../../entities/comment/model/queryKeys"
+import { Comment } from "@entities/comment/model/types"
+import { useDeleteCommentMutation } from "@entities/comment/model/hooks/mutations"
+import { commentQueryKeys } from "@entities/comment/model/queryKeys"
 import { useCallback } from "react"
 
 interface DeleteCommentDialogProps {
